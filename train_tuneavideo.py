@@ -66,6 +66,7 @@ def main(
     use_8bit_adam: bool = False,
     enable_xformers_memory_efficient_attention: bool = True,
     seed: Optional[int] = None,
+    num_iter : int
 ):
     *_, config = inspect.getargvalues(inspect.currentframe())
 
@@ -102,11 +103,12 @@ def main(
         OmegaConf.save(config, os.path.join(output_dir, 'config.yaml'))
 
     # Load scheduler, tokenizer and models.
-    noise_scheduler = DDPMScheduler.from_pretrained(pretrained_model_path, subfolder="scheduler")
-    tokenizer = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
-    text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
-    vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
-    unet = UNet3DConditionModel.from_pretrained_2d(pretrained_model_path, subfolder="unet")
+    if(num_iter == 1):
+        noise_scheduler = DDPMScheduler.from_pretrained(pretrained_model_path, subfolder="scheduler")
+        tokenizer = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
+        text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
+        vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
+        unet = UNet3DConditionModel.from_pretrained_2d(pretrained_model_path, subfolder="unet")
 
     # Freeze vae and text_encoder
     vae.requires_grad_(False)
