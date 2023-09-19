@@ -38,6 +38,7 @@ logger = get_logger(__name__, log_level="INFO")
 
 def main(
     pretrained_model_path: str,
+    num_iter : str,
     output_dir: str,
     train_data: Dict,
     validation_data: Dict,
@@ -65,8 +66,7 @@ def main(
     mixed_precision: Optional[str] = "fp16",
     use_8bit_adam: bool = False,
     enable_xformers_memory_efficient_attention: bool = True,
-    seed: Optional[int] = None,
-    num_iter : int
+    seed: Optional[int] = None
 ):
     *_, config = inspect.getargvalues(inspect.currentframe())
 
@@ -103,7 +103,7 @@ def main(
         OmegaConf.save(config, os.path.join(output_dir, 'config.yaml'))
 
     # Load scheduler, tokenizer and models.
-    if(num_iter == 1):
+    if(num_iter == '1'):
         noise_scheduler = DDPMScheduler.from_pretrained(pretrained_model_path, subfolder="scheduler")
         tokenizer = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
         text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
